@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Card from "../Card/Card";
-import type { CardInterface } from "../../interface/CardInterface";
+import Card from "../../atoms/Card/Card";
+import type { CardInterface } from "../../../interface/CardInterface";
 import { GridContainer } from "./style";
 
 interface GridCardProps {

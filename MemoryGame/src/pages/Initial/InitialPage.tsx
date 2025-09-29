@@ -12,7 +12,7 @@ import LogoGame from "../../assets/imgs/LogoGame.svg";
 import { useState } from "react";
 import { usePlayerDataMutate } from "@/assets/hooks/usePlayerDataMutate";
 import type { PlayerInterface } from "@/assets/interface/PlayerInterface";
-import { InfoNotification } from "@/assets/Components/InfoNotification/InfoNotification";
+import { InfoNotification } from "@/assets/Components/atoms/InfoNotification/InfoNotification";
 
 const InitialPage: React.FC = () => {
   const navigate = useNavigate();

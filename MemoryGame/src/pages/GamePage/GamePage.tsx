@@ -2,7 +2,7 @@ import React from "react";
 import { useCardData } from "../../assets/hooks/useCardData";
 import { useState, useEffect } from "react";
 import type { CardInterface } from "../../assets/interface/CardInterface";
-import GridCard from "../../assets/Components/Grid/GridCard";
+import GridCard from "../../assets/Components/molecules/Grid/GridCard";
 import { BackgroundPage } from "./style";
 
 const GamePage: React.FC = () => {
