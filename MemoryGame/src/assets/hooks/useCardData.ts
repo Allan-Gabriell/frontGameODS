@@ -2,10 +2,10 @@ import axios, { type AxiosPromise } from "axios";
 import type { CardInterface } from "../interface/CardInterface.ts";
 import { useQuery } from "@tanstack/react-query";
 
-const API_URL = "http://localhost:8080";
+const API_URL = "http://localhost:8080/game";
 
 const fetchData = async (): AxiosPromise<CardInterface[]> => {
-  const response = axios.get(API_URL + "/card");
+  const response = axios.get(API_URL + "/load-cards");
   return response;
 };
 
