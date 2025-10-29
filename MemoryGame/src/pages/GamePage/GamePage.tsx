@@ -6,10 +6,12 @@ import { BackgroundPage } from "./style";
 import { DataInfoGame } from "@/assets/Components/atoms/DataInfoGame/DataInfoGame";
 import { useRaking } from "@/assets/hooks/useRanking";
 import type { PlayerWithScoreInterface } from "@/assets/interface/PlayerWithScoreInterface";
+import { usePlayerData } from "@/assets/hooks/usePLayerData";
 
 const GamePage: React.FC = () => {
   const { data: cardData } = useCardData();
   const { data: dataRanking } = useRaking();
+  const { data: currentPlayer } = usePlayerData();
 
   const [cards, setCards] = useState<CardInterface[]>([]);
   const [ranking, setRanking] = useState<PlayerWithScoreInterface[]>([]);
@@ -22,7 +24,7 @@ const GamePage: React.FC = () => {
   return (
     <BackgroundPage>
       <GridCard cards={cards} />
-      <DataInfoGame players={ranking} />
+      <DataInfoGame players={ranking} currentPlayer={currentPlayer} />
     </BackgroundPage>
   );
 };
