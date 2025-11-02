@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Card from "../../atoms/Card/Card";
 import type { CardInterface } from "../../../interface/CardInterface";
 import { GridContainer } from "./style";
+import { useMovements } from "../../../hooks/useMovements";
 
 interface GridCardProps {
   cards: CardInterface[];
@@ -15,6 +16,9 @@ interface FlippedCard {
 const GridCard: React.FC<GridCardProps> = ({ cards }) => {
   const [flipped, setFlipped] = useState<FlippedCard[]>([]);
   const [matchedIds, setMatchedIds] = useState<number[]>([]);
+  const [startTime] = useState(Date.now());
+
+  const { sendMovement } = useMovements();
 
   const handleClick = (card: CardInterface, index: number) => {
     if (flipped.find((f) => f.index === index) || matchedIds.includes(card.id))
@@ -25,10 +29,15 @@ const GridCard: React.FC<GridCardProps> = ({ cards }) => {
 
     if (newFlipped.length === 2) {
       const [first, second] = newFlipped;
+      const isValid = first.id === second.id;
 
-      if (first.id === second.id) {
+      if (isValid) {
         setMatchedIds((prev) => [...prev, first.id]);
       }
+
+      const timeSecond = Math.floor((Date.now() - startTime) / 1000);
+
+      sendMovement({ isActive: isValid, timeSecond });
 
       setTimeout(() => {
         setFlipped([]);

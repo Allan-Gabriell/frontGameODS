@@ -16,6 +16,7 @@ export function useRaking(){
         queryFn: fetchData,
         queryKey: ["ranking-data"],
         retry: 2,
+        refetchInterval: 2000,
     })
 
     return {

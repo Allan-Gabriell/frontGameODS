@@ -9,8 +9,13 @@ export const StyleDiv = styled(Card)`
     width: 100%;
     max-width: 400px;
     padding: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 `;
+
 
 export const StyledBox1 = styled(Box)<{ bgColor?: string }>`
   display: flex;
