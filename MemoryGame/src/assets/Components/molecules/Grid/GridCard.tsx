@@ -3,6 +3,7 @@ import Card from "../../atoms/Card/Card";
 import type { CardInterface } from "../../../interface/CardInterface";
 import { GridContainer } from "./style";
 import { useMovements } from "../../../hooks/useMovements";
+import { usePlayerData } from "../../../hooks/usePLayerData";
 
 interface GridCardProps {
   cards: CardInterface[];
@@ -19,8 +20,13 @@ const GridCard: React.FC<GridCardProps> = ({ cards }) => {
   const [startTime] = useState(Date.now());
 
   const { sendMovement } = useMovements();
+  const { data: player } = usePlayerData();
 
   const handleClick = (card: CardInterface, index: number) => {
+    if (player && player.movements === 0) {
+      alert("Não há movimentos possíveis. Fim de jogo.");
+      return;
+    }
     if (flipped.find((f) => f.index === index) || matchedIds.includes(card.id))
       return;
 

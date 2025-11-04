@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import type { PlayerInterface } from "@/assets/interface/PlayerInterface";
 import type { PlayerWithScoreInterface } from "@/assets/interface/PlayerWithScoreInterface";
 import { DataPlayer } from "../DataPLayer/DataPlayer";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { StyledBox1, StyleDiv } from "./style";
 
 // Importando imagens
@@ -22,6 +22,7 @@ interface DataInfoGameProps {
 
 export const DataInfoGame: React.FC<DataInfoGameProps> = ({ players = [], currentPlayer }) => {
   const [secondsElapsed, setSecondsElapsed] = useState(0);
+  const prevMovements = useRef<number | undefined>(undefined);
 
   const avatarImages = [img1, img2, img3, img4, img5];
 
@@ -35,12 +36,32 @@ export const DataInfoGame: React.FC<DataInfoGameProps> = ({ players = [], curren
   }, [players]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSecondsElapsed((prev) => prev + 1);
-    }, 1000);
+    const currentMovements = currentPlayer?.movements;
 
-    return () => clearInterval(timer);
-  }, []);
+    if (
+      prevMovements.current === 0 &&
+      typeof currentMovements === "number" &&
+      currentMovements > 0
+    ) {
+      setSecondsElapsed(0);
+    }
+
+    prevMovements.current = currentMovements;
+
+    let timer: NodeJS.Timeout | undefined;
+
+    if (typeof currentMovements === "number" && currentMovements > 0) {
+      timer = setInterval(() => {
+        setSecondsElapsed((prev) => prev + 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [currentPlayer]);
 
   const minutes = Math.floor(secondsElapsed / 60);
   const seconds = secondsElapsed % 60;
