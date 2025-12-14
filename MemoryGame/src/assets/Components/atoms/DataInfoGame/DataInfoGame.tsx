@@ -5,10 +5,9 @@ import Stack from "@mui/material/Stack";
 import type { PlayerInterface } from "@/assets/interface/PlayerInterface";
 import type { PlayerWithScoreInterface } from "@/assets/interface/PlayerWithScoreInterface";
 import { DataPlayer } from "../DataPLayer/DataPlayer";
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { StyledBox1, StyleDiv } from "./style";
 
-// Importando imagens
 import img1 from "@/assets/imgs/ilustracao-3d-com-avatar-on-line_23-2151303097.jpg";
 import img2 from "@/assets/imgs/ilustracao-3d-de-avatar-ou-perfil-humano_23-2150671116.jpg";
 import img3 from "@/assets/imgs/ilustracao-3d-de-avatar-ou-perfil-humano_23-2150671124.jpg";
@@ -18,11 +17,15 @@ import img5 from "@/assets/imgs/renderizacao-3d-do-estilo-de-cabelo-para-o-desig
 interface DataInfoGameProps {
   players?: PlayerWithScoreInterface[];
   currentPlayer?: PlayerInterface;
+  paused?: boolean;
 }
 
-export const DataInfoGame: React.FC<DataInfoGameProps> = ({ players = [], currentPlayer }) => {
+export const DataInfoGame: React.FC<DataInfoGameProps> = ({
+  players = [],
+  currentPlayer,
+  paused = false,
+}) => {
   const [secondsElapsed, setSecondsElapsed] = useState(0);
-  const prevMovements = useRef<number | undefined>(undefined);
 
   const avatarImages = [img1, img2, img3, img4, img5];
 
@@ -30,38 +33,28 @@ export const DataInfoGame: React.FC<DataInfoGameProps> = ({ players = [], curren
     const map: Record<string, string> = {};
     players.forEach((player) => {
       const randomIndex = Math.floor(Math.random() * avatarImages.length);
-      map[player.id ?? player.name ?? Math.random().toString()] = avatarImages[randomIndex];
+      map[player.id ?? player.name ?? Math.random().toString()] =
+        avatarImages[randomIndex];
     });
     return map;
   }, [players]);
 
   useEffect(() => {
-    const currentMovements = currentPlayer?.movements;
+    if (paused) return;
 
-    if (
-      prevMovements.current === 0 &&
-      typeof currentMovements === "number" &&
-      currentMovements > 0
-    ) {
-      setSecondsElapsed(0);
-    }
-
-    prevMovements.current = currentMovements;
-
+    const movements = currentPlayer?.movements;
     let timer: NodeJS.Timeout | undefined;
 
-    if (typeof currentMovements === "number" && currentMovements > 0) {
+    if (typeof movements === "number" && movements > 0) {
       timer = setInterval(() => {
         setSecondsElapsed((prev) => prev + 1);
       }, 1000);
     }
 
     return () => {
-      if (timer) {
-        clearInterval(timer);
-      }
+      if (timer) clearInterval(timer);
     };
-  }, [currentPlayer]);
+  }, [currentPlayer, paused]);
 
   const minutes = Math.floor(secondsElapsed / 60);
   const seconds = secondsElapsed % 60;
@@ -78,20 +71,26 @@ export const DataInfoGame: React.FC<DataInfoGameProps> = ({ players = [], curren
       case 0:
         return "#FFD700";
       case 1:
-        return "#C0C0C0"; 
+        return "#C0C0C0";
       case 2:
         return "#CD7F32";
       default:
-        return "rgba(255, 255, 255, 0.8)"; 
+        return "rgba(255, 255, 255, 0.8)";
     }
   };
 
   return (
     <StyleDiv>
-      {currentPlayer && <DataPlayer player={currentPlayer} time={formattedTime} />}
+      {currentPlayer && (
+        <DataPlayer player={currentPlayer} time={formattedTime} />
+      )}
+
       <Stack spacing={2}>
         {topPlayers.map((playerItem, index) => (
-          <StyledBox1 key={playerItem.id ?? index} bgColor={getMedalColor(index)}>
+          <StyledBox1
+            key={playerItem.id ?? index}
+            bgColor={getMedalColor(index)}
+          >
             <Avatar
               src={playerAvatars[playerItem.id ?? playerItem.name ?? index]}
               alt={playerItem.name}
@@ -107,4 +106,3 @@ export const DataInfoGame: React.FC<DataInfoGameProps> = ({ players = [], curren
     </StyleDiv>
   );
 };
-
